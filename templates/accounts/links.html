@@ -1,16 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Мои ссылки · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+{% block title %}Ссылки пользователей · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
 
 {% block content %}
     <div class="page-head">
-        <h1 class="page-title">Мои ссылки</h1>
-        <p class="page-subtitle">Добавьте и храните свои полезные ссылки</p>
+        <h1 class="page-title">Ссылки пользователей</h1>
+        <p class="page-subtitle">Общая доска ссылок всех участников сайта</p>
     </div>
 
-    <div class="two-col">
-        <div class="card">
-            <h2 class="card-title">Добавить ссылку</h2>
+    <div class="card links-section">
+        <div class="links-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+            <h2 class="card-title" style="margin:0;">Все ссылки ({{ links|length }})</h2>
+            <button type="button" class="btn btn-primary" id="add-link-btn">Добавить ссылку</button>
+        </div>
+
+        {% if links %}
+            <div class="links-grid">
+                {% for link in links %}
+                    <a href="{{ link.url }}" target="_blank" rel="noopener" class="link-circle" title="{{ link.title }}">
+                        <div class="link-avatar">
+                            {% if link.user.avatar %}
+                                <img src="{{ link.user.avatar.url }}" alt="{{ link.user.username }}" class="avatar avatar-sm">
+                            {% else %}
+                                <span class="avatar-initials avatar-sm">{{ link.user.initials }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="link-owner">{{ link.user.full_name|default:link.user.username }}</div>
+                        <div class="link-title">{{ link.title }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted" style="text-align:center;">Пока никто не добавил ссылок. Нажмите «Добавить ссылку», чтобы добавить свою.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal: добавить ссылку -->
+    <div class="modal-overlay" id="add-link-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить свою ссылку</h3>
+                <button type="button" class="modal-close" id="close-link-modal">&times;</button>
+            </div>
             {% if form.errors %}
                 <div class="alert alert-error">{{ form.non_field_errors }}</div>
             {% endif %}
@@ -26,41 +57,38 @@
                     {{ form.url }}
                     {{ form.url.errors }}
                 </div>
-                <button type="submit" class="btn btn-primary">Добавить ссылку</button>
+                <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">
+                    <button type="button" class="btn btn-ghost" id="cancel-link-btn">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить ссылку</button>
+                </div>
             </form>
         </div>
-
-        <div class="card">
-            <h2 class="card-title">Мои ссылки ({{ links|length }})</h2>
-            {% if links %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Заголовок</th>
-                            <th>Ссылка</th>
-                            <th>Создана</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for link in links %}
-                            <tr>
-                                <td>{{ link.title }}</td>
-                                <td><a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a></td>
-                                <td>{{ link.created_at|date:"d.m.Y H:i" }}</td>
-                                <td class="file-actions">
-                                    <form method="post" action="{% url 'accounts:link_delete' link.id %}" class="delete-form inline-form">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-small btn-danger">Удалить</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="muted">У вас пока нет добавленных ссылок.</p>
-            {% endif %}
-        </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        (function () {
+            var btn = document.getElementById("add-link-btn");
+            var modal = document.getElementById("add-link-modal");
+            var closeBtn = document.getElementById("close-link-modal");
+            var cancelBtn = document.getElementById("cancel-link-btn");
+
+            function openModal() {
+                modal.style.display = "flex";
+            }
+            function closeModal() {
+                modal.style.display = "none";
+            }
+
+            if (btn) btn.addEventListener("click", openModal);
+            if (closeBtn) closeBtn.addEventListener("click", closeModal);
+            if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+            if (modal) {
+                modal.addEventListener("click", function (e) {
+                    if (e.target === modal) closeModal();
+                });
+            }
+        })();
+    </script>
 {% endblock %}

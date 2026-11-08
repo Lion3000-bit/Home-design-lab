@@ -28,7 +28,7 @@ class DashboardHomeView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             StoredFile.objects.aggregate(total_size=Sum("size"))["total_size"] or 0
         )
         context["recent_users"] = CustomUser.objects.order_by("-date_joined")[:5]
-        context["recent_files"] = StoredFile.objects.select_related("user").order_by("-uploaded_at")[:5]
+        context["recent_files"] = StoredFile.objects.select_related("user", "folder").order_by("-uploaded_at")[:5]
         return context
 
 

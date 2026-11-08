@@ -2,7 +2,7 @@ from django.contrib.auth import login as auth_login
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView  # Проверьте импорт
@@ -79,13 +79,23 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 
 class LinkListView(LoginRequiredMixin, View):
-    """Страница со ссылками пользователя и формой добавления новой ссылки."""
+    """Ссылки всех пользователей (доступны каждому авторизованному).
+    Добавлять/удалять можно только свои ссылки."""
 
     template_name = "accounts/links.html"
 
     def get(self, request, *args, **kwargs):
-        links = UserLink.objects.filter(user=request.user).order_by("-created_at")
-        return render(request, self.template_name, {"links": links, "form": LinkForm()})
+        links = (
+            UserLink.objects.select_related("user")
+            .all()
+            .order_by("-created_at")
+        )
+        my_links = UserLink.objects.filter(user=request.user)
+        return render(
+            request,
+            self.template_name,
+            {"links": links, "my_links": my_links, "form": LinkForm()},
+        )
 
     def post(self, request, *args, **kwargs):
         form = LinkForm(request.POST)
@@ -94,8 +104,17 @@ class LinkListView(LoginRequiredMixin, View):
             link.user = request.user
             link.save()
             return redirect("accounts:links")
-        links = UserLink.objects.filter(user=request.user).order_by("-created_at")
-        return render(request, self.template_name, {"links": links, "form": form})
+        links = (
+            UserLink.objects.select_related("user")
+            .all()
+            .order_by("-created_at")
+        )
+        my_links = UserLink.objects.filter(user=request.user)
+        return render(
+            request,
+            self.template_name,
+            {"links": links, "my_links": my_links, "form": form},
+        )
 
 
 class LinkDeleteView(LoginRequiredMixin, View):

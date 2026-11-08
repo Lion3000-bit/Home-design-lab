@@ -23,8 +23,7 @@
             <nav class="nav">
                 <a href="{% url 'pages:home' %}" class="nav-link">Главная</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'files:list' %}" class="nav-link">Мои файлы</a>
-                    <a href="{% url 'files:public' %}" class="nav-link">Файлы всех</a>
+                    <a href="{% url 'files:list' %}" class="nav-link">Файлы</a>
                     <a href="{% url 'accounts:links' %}" class="nav-link">Мои ссылки</a>
                     <a href="{% url 'chat:chat' %}" class="nav-link">Общий чат</a>
                 {% endif %}

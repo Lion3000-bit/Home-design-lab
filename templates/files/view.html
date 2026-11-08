@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load file_icons %}
+
+{% block title %}{{ file.name }} · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="gd-header">
+        <div class="gd-breadcrumbs">
+            {% if breadcrumbs %}
+                {% for crumb in breadcrumbs %}
+                    {% if not forloop.last %}
+                        <a href="{% url 'files:folder' crumb.id %}" class="gd-crumb">{{ crumb.name }}</a> ›
+                    {% else %}
+                        <span class="gd-crumb gd-crumb-current">{{ crumb.name }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if breadcrumbs and file.name %} › {% endif %}
+            <span class="gd-crumb gd-crumb-current">{{ file.name }}</span>
+        </div>
+        <div class="gd-actions">
+            <a href="{% url 'files:download' file.id %}" class="btn btn-outline btn-sm">Скачать</a>
+            {% if file.folder %}
+                <a href="{% url 'files:folder' file.folder.id %}" class="btn btn-ghost btn-sm">В папку</a>
+            {% else %}
+                <a href="{% url 'files:list' %}" class="btn btn-ghost btn-sm">К файлам</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="gd-preview-card card">
+        <div class="gd-file-info">
+            <div class="gd-file-icon-big">{{ file.content_type|file_icon }}</div>
+            <div class="gd-file-details">
+                <h2 class="gd-file-title">{{ file.name }}</div>
+                <div class="gd-file-meta">
+                    <span>{{ file.size_human }}</span>
+                    <span>·</span>
+                    <span>{{ file.uploaded_at|date:"d.m.Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="gd-preview-content">
+            {% if mode == "image" %}
+                <img src="{{ file.file.url }}" alt="{{ file.name }}" class="gd-preview-img">
+            {% elif mode == "video" %}
+                <video controls class="gd-preview-media" src="{{ file.file.url }}"></video>
+            {% elif mode == "audio" %}
+                <audio controls class="gd-preview-media" src="{{ file.file.url }}"></audio>
+            {% elif mode == "text" %}
+                <pre class="gd-preview-text">{{ text_content }}</pre>
+            {% else %}
+                <div class="gd-empty" style="text-align:center; padding:48px;">
+                    Прямой просмотр этого типа файла не поддерживается.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="gd-preview-actions" style="margin-top:16px; display:flex; gap:10px;">
+            <a href="{% url 'files:download' file.id %}" class="btn btn-primary">Скачать файл</a>
+            <form method="post" action="{% url 'files:move' file.id %}" class="gd-inline-form" style="display:inline; margin-left:auto;">
+                {% csrf_token %}
+                <select name="folder_id" class="select-small">
+                    <option value="">В корень</option>
+                    {% for fld in all_folders %}
+                        <option value="{{ fld.id }}">{{ fld.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-outline btn-sm">Переместить</button>
+            </form>
+            <form method="post" action="{% url 'files:delete' file.id %}" class="delete-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
