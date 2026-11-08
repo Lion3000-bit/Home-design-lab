@@ -4,7 +4,6 @@ from django.contrib.auth.password_validation import validate_password
 
 User = get_user_model()
 
-
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=150, min_length=3, help_text="3-150 символов")
     email = forms.EmailField()

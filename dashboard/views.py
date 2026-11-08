@@ -41,6 +41,11 @@ class DashboardSettingsView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     def test_func(self):
         return self.request.user.is_staff
 
+    def get_object(self, queryset=None):
+        # Используем уже готовый в вашей модели метод load()
+        return SiteSettings.load()
+
+
 
 class DashboardUsersView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
