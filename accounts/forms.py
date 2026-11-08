@@ -2,7 +2,10 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 
+from .models import UserLink
+
 User = get_user_model()
+
 
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=150, min_length=3, help_text="3-150 символов")
@@ -56,6 +59,12 @@ class ProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields["username"].help_text = "Имя пользователя"
+
+
+class LinkForm(forms.ModelForm):
+    class Meta:
+        model = UserLink
+        fields = ("title", "url")
 
 
 class ChangePasswordForm(forms.Form):

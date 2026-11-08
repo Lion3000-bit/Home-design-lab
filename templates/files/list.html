@@ -1,65 +1,137 @@
 {% extends "base.html" %}
+{% load file_icons %}
 
-{% block title %}Мои файлы · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+{% block title %}Файлы · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
 
 {% block content %}
     <div class="page-head">
-        <h1 class="page-title">Мои файлы</h1>
-        <p class="page-subtitle">Загрузка, скачивание и удаление файлов</p>
+        <h1 class="page-title">Файлы</h1>
+        <p class="page-subtitle">Общая файловая системы всех пользователей</p>
     </div>
 
-    <div class="card storage-card">
-        <div class="storage-info">
-            <span>Использовано: <strong>{{ storage_used }} Байт</strong></span>
-            <span class="muted">Лимит хранилища: {{ storage_limit }} Байт</span>
+    <div class="gd-header">
+        <div class="gd-breadcrumbs">
+            {% if breadcrumbs %}
+                {% for crumb in breadcrumbs %}
+                    {% if not forloop.last %}
+                        <a href="{% url 'files:folder' crumb.id %}" class="gd-crumb">{{ crumb.name }}</a> ›
+                    {% else %}
+                        <span class="gd-crumb gd-crumb-current">{{ crumb.name }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <span class="gd-crumb gd-crumb-current">Корень</span>
+            {% endif %}
+        </div>
+        <div class="gd-actions">
+            <form method="post" action="{% url 'files:create_folder' %}" class="gd-inline-form" style="display:inline;">
+                {% csrf_token %}
+                {% if folder %}<input type="hidden" name="parent_id" value="{{ folder.id }}">{% endif %}
+                <input type="text" name="name" placeholder="Новая папка" required>
+                <button type="submit" class="btn btn-outline btn-sm">Создать папку</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="gd-storage-bar" style="margin:16px 0;">
+        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span>Использовано: <strong>{{ storage_used_human }}</strong></span>
+            <span>Свободно на разделе: {{ storage_limit_human }}</span>
         </div>
         <div class="storage-bar">
             <div class="storage-bar-fill" style="width: {{ storage_percent }}%"></div>
         </div>
     </div>
 
-    <div class="card">
-        <h2 class="card-title">Загрузить файлы</h2>
-        <form method="post" enctype="multipart/form-data" class="upload-form">
+    <div class="gd-grid">
+        <!-- Подпапки -->
+        {% for sf in subfolders %}
+            <a href="{% url 'files:folder' sf.id %}" class="gd-item gd-folder">
+                <div class="gd-item-icon">📁</div>
+                <div class="gd-item-name">{{ sf.name }}</div>
+                <div class="gd-item-meta" style="font-size:11px;">{{ sf.user.full_name|default:sf.user.username }}</div>
+            </a>
+        {% endfor %}
+
+        <!-- Файлы -->
+        {% for f in files %}
+            <a href="{% url 'files:view' f.id %}" class="gd-item gd-file">
+                <div class="gd-item-icon gd-file-icon">{{ f.content_type|file_icon }}</div>
+                <div class="gd-item-name">{{ f.name }}</div>
+                <div class="gd-item-meta">{{ f.size_human }} · {{ f.uploaded_at|date:"d.m.Y" }}</div>
+                <div class="gd-item-meta" style="font-size:11px;">{{ f.user.full_name|default:f.user.username }}</div>
+            </a>
+        {% endfor %}
+
+        {% if not subfolders and not files %}
+            <div class="gd-empty">Папка пуста. Загрузите файлы или создайте папку.</div>
+        {% endif %}
+    </div>
+
+    <div class="gd-upload-card card" style="margin-top:24px;">
+        <h2 class="card-title">Загрузить файлы{% if folder %} в «{{ folder.name }}»{% endif %}</h2>
+        <form method="post" enctype="multipart/form-data" class="upload-form" action="{% if folder %}{% url 'files:folder' folder.id %}{% else %}{% url 'files:list' %}{% endif %}">
             {% csrf_token %}
             <input type="file" name="files" id="files" multiple required>
             <button type="submit" class="btn btn-primary">Загрузить</button>
         </form>
     </div>
 
-    <div class="card">
-        <h2 class="card-title">Загруженные файлы ({{ files|length }})</h2>
-        {% if files %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>Размер</th>
-                        <th>Тип</th>
-                        <th>Дата</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for f in files %}
-                        <tr>
-                            <td class="file-name">{{ f.name }}</td>
-                            <td>{{ f.size_human }}</td>
-                            <td>{{ f.content_type }}</td>
-                            <td>{{ f.uploaded_at|date:"d.m.Y H:i" }}</td>
-                            <td class="file-actions">
-                                <a href="{% url 'files:download' f.id %}" class="btn btn-small btn-outline">Скачать</a>
-                                <form method="post" action="{% url 'files:delete' f.id %}" class="delete-form">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="muted">Файлы ещё не были загружены.</p>
+    <div class="gd-actions-row" style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border); display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        {% for f in files %}
+            {% if f.user == user %}
+                <form method="post" action="{% url 'files:move' f.id %}" class="gd-inline-form" style="display:inline-block; margin-left:10px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% if folder %}{% url 'files:folder' folder.id %}{% else %}{% url 'files:list' %}{% endif %}">
+                    <select name="folder_id" class="select-small">
+                        <option value="">В корень</option>
+                        {% for fld in all_folders %}
+                            {% if fld.user == user %}
+                                <option value="{{ fld.id }}">{{ fld.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-outline btn-sm">Переместить «{{ f.name|truncatechars:20 }}»</button>
+                </form>
+                <form method="post" action="{% url 'files:delete' f.id %}" class="delete-form" style="display:inline-block; margin-left:6px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% if folder %}{% url 'files:folder' folder.id %}{% else %}{% url 'files:list' %}{% endif %}">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            {% elif user.is_staff %}
+                <form method="post" action="{% url 'files:move' f.id %}" class="gd-inline-form" style="display:inline-block; margin-left:10px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% if folder %}{% url 'files:folder' folder.id %}{% else %}{% url 'files:list' %}{% endif %}">
+                    <select name="folder_id" class="select-small">
+                        <option value="">В корень</option>
+                        {% for fld in all_folders %}
+                            <option value="{{ fld.id }}">{{ fld.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-outline btn-sm">Переместить «{{ f.name|truncatechars:20 }}»</button>
+                </form>
+                <form method="post" action="{% url 'files:delete' f.id %}" class="delete-form" style="display:inline-block; margin-left:6px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% if folder %}{% url 'files:folder' folder.id %}{% else %}{% url 'files:list' %}{% endif %}">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            {% endif %}
+        {% endfor %}
+
+        {% if folder %}
+            {% if folder.user == user %}
+                <form method="post" action="{% url 'files:delete_folder' folder.id %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'files:list' %}">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить папку</button>
+                </form>
+            {% elif user.is_staff %}
+                <form method="post" action="{% url 'files:delete_folder' folder.id %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'files:list' %}">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить папку</button>
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from .models import CustomUser
+from .models import CustomUser, UserLink
 
 
 @admin.register(CustomUser)
@@ -32,3 +32,12 @@ class UserAdmin(DjangoUserAdmin):
             },
         ),
     )
+
+
+@admin.register(UserLink)
+class UserLinkAdmin(admin.ModelAdmin):
+    list_display = ("title", "user", "url", "created_at")
+    list_filter = ("created_at",)
+    search_fields = ("title", "url", "user__email", "user__username")
+    raw_id_fields = ("user",)
+

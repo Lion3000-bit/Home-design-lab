@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Ссылки пользователей · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Ссылки пользователей</h1>
+        <p class="page-subtitle">Общая доска ссылок всех участников сайта</p>
+    </div>
+
+    <div class="card links-section">
+        <div class="links-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+            <h2 class="card-title" style="margin:0;">Все ссылки ({{ links|length }})</h2>
+            <button type="button" class="btn btn-primary" id="add-link-btn">Добавить ссылку</button>
+        </div>
+
+        {% if links %}
+            <div class="links-grid">
+                {% for link in links %}
+                    <a href="{{ link.url }}" target="_blank" rel="noopener" class="link-circle" title="{{ link.title }}">
+                        <div class="link-avatar">
+                            {% if link.user.avatar %}
+                                <img src="{{ link.user.avatar.url }}" alt="{{ link.user.username }}" class="avatar avatar-sm">
+                            {% else %}
+                                <span class="avatar-initials avatar-sm">{{ link.user.initials }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="link-owner">{{ link.user.full_name|default:link.user.username }}</div>
+                        <div class="link-title">{{ link.title }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted" style="text-align:center;">Пока никто не добавил ссылок. Нажмите «Добавить ссылку», чтобы добавить свою.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal: добавить ссылку -->
+    <div class="modal-overlay" id="add-link-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить свою ссылку</h3>
+                <button type="button" class="modal-close" id="close-link-modal">&times;</button>
+            </div>
+            {% if form.errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <form method="post" class="form">
+                {% csrf_token %}
+                <div class="form-field">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                </div>
+                <div class="form-field">
+                    {{ form.url.label_tag }}
+                    {{ form.url }}
+                    {{ form.url.errors }}
+                </div>
+                <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">
+                    <button type="button" class="btn btn-ghost" id="cancel-link-btn">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить ссылку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        (function () {
+            var btn = document.getElementById("add-link-btn");
+            var modal = document.getElementById("add-link-modal");
+            var closeBtn = document.getElementById("close-link-modal");
+            var cancelBtn = document.getElementById("cancel-link-btn");
+
+            function openModal() {
+                modal.style.display = "flex";
+            }
+            function closeModal() {
+                modal.style.display = "none";
+            }
+
+            if (btn) btn.addEventListener("click", openModal);
+            if (closeBtn) closeBtn.addEventListener("click", closeModal);
+            if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+            if (modal) {
+                modal.addEventListener("click", function (e) {
+                    if (e.target === modal) closeModal();
+                });
+            }
+        })();
+    </script>
+{% endblock %}

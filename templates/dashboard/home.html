@@ -26,8 +26,8 @@
             <div class="stat-label">Загруженных файлов</div>
         </div>
         <div class="card stat-card">
-            <div class="stat-value">{{ storage_used }}</div>
-            <div class="stat-label">Объём файлов (Байт)</div>
+            <div class="stat-value">{{ storage_used|filesizeformat }}</div>
+            <div class="stat-label">Объём файлов</div>
         </div>
     </div>
 
@@ -66,6 +66,7 @@
                     <tr>
                         <th>Файл</th>
                         <th>Пользователь</th>
+                        <th>Папка</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,6 +74,7 @@
                         <tr>
                             <td>{{ f.name }}</td>
                             <td>{{ f.user.email }}</td>
+                            <td>{{ f.folder.name|default:"Корень" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

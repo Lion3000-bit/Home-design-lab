@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "files",
     "pages",
     "dashboard",
+    "chat",
 ]
 
 MIDDLEWARE = [

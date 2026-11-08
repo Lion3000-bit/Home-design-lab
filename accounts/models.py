@@ -66,3 +66,25 @@ class CustomUser(AbstractUser):
     @property
     def is_admin(self):
         return self.is_staff or self.is_superuser
+
+
+class UserLink(models.Model):
+    """Ссылка, которую пользователь добавил на свою страницу ссылок."""
+
+    user = models.ForeignKey(
+        "accounts.CustomUser",
+        on_delete=models.CASCADE,
+        related_name="user_links",
+        verbose_name="Пользователь",
+    )
+    title = models.CharField(max_length=200, verbose_name="Заголовок")
+    url = models.URLField(verbose_name="Ссылка")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создана")
+
+    class Meta:
+        verbose_name = "Ссылка пользователя"
+        verbose_name_plural = "Ссылки пользователей"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.title} ({self.user})"

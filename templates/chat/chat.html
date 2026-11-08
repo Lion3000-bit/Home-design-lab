@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Общий чат · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Общий чат</h1>
+        <p class="page-subtitle">Общение между всеми пользователями сайта</p>
+    </div>
+
+    <div class="tg-chat">
+        <div class="tg-messages" id="tg-messages">
+            {% for day, msgs in groups %}
+                <div class="tg-date-separator">{{ day|date:"d M Y" }}</div>
+                {% for m in msgs %}
+                    <div class="tg-message {% if m.user == user %}tg-message-own{% else %}tg-message-other{% endif %}">
+                        {% if m.user != user %}
+                            <div class="tg-avatar">
+                                {% if m.user.avatar %}
+                                    <img src="{{ m.user.avatar.url }}" alt="{{ m.user.username }}" class="avatar avatar-sm">
+                                {% else %}
+                                    <span class="avatar-initials avatar-sm">{{ m.user.initials }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="tg-bubble">
+                            {% if m.user != user %}
+                                <div class="tg-sender">{{ m.user.full_name|default:m.user.username }}</div>
+                            {% endif %}
+                            <div class="tg-text">{{ m.text|linebreaksbr }}</div>
+                            <div class="tg-meta">
+                                <span class="tg-time">{{ m.created_at|time:"H:i" }}</span>
+                                <span class="tg-status">✔✔</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% empty %}
+                <div class="tg-empty">Чат пуст. Напишите первое сообщение.</div>
+            {% endfor %}
+        </div>
+
+        <div class="tg-input-area">
+            <form method="post" class="tg-form" autocomplete="off">
+                {% csrf_token %}
+                <textarea name="text" rows="1" placeholder="Новое сообщение" required></textarea>
+                <button type="submit" class="tg-send">▶</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var container = document.getElementById("tg-messages");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+        // Авторазмер textarea
+        var ta = document.querySelector(".tg-form textarea");
+        if (ta) {
+            ta.addEventListener("input", function () {
+                this.style.height = "auto";
+                this.style.height = this.scrollHeight + "px";
+            });
+        }
+    </script>
+{% endblock %}
