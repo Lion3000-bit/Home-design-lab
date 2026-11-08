@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Пользователи · Панель администратора · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Управление пользователями</h1>
+        <p class="page-subtitle">Изменение ролей, блокировка и удаление аккаунтов</p>
+    </div>
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Имя</th>
+                    <th>Роль</th>
+                    <th>Файлов</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                    <tr>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.full_name|default:u.username }}</td>
+                        <td>
+                            {% if u.is_staff %}<span class="badge badge-primary">Администратор</span>{% else %}<span class="badge badge-secondary">Пользователь</span>{% endif %}
+                        </td>
+                        <td>{{ u.stored_files.count }}</td>
+                        <td>
+                            {% if u.is_active %}<span class="badge badge-success">Активен</span>{% else %}<span class="badge badge-danger">Заблокирован</span>{% endif %}
+                        </td>
+                        <td class="file-actions">
+                            <form method="post" action="{% url 'dashboard:users' %}{% if u.pk %}?action=role&amp;pk={{ u.pk }}{% endif %}" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-small btn-outline">Сменить роль</button>
+                            </form>
+                            <form method="post" action="{% url 'dashboard:users' %}{% if u.pk %}?action=toggle_active&amp;pk={{ u.pk }}{% endif %}" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-small btn-ghost">{% if u.is_active %}Заблокировать{% else %}Разблокировать{% endif %}</button>
+                            </form>
+                            {% if u != request.user %}
+                                <form method="post" action="{% url 'dashboard:users' %}{% if u.pk %}?action=delete&amp;pk={{ u.pk }}{% endif %}" class="inline-form" onsubmit="return confirm('Удалить пользователя?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

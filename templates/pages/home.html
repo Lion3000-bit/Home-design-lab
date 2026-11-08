@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    {% if site_settings.announcement_active and site_settings.announcement %}
+        <div class="announcement">
+            <div class="container">
+                📢 {{ site_settings.announcement }}
+            </div>
+        </div>
+    {% endif %}
+
+    <section class="hero">
+        <div class="container hero-inner">
+            <div class="hero-badge">Добро пожаловать</div>
+            <h1 class="hero-title">{{ site_settings.site_name|default:"Мой дом" }}</h1>
+            <p class="hero-tagline">{{ site_settings.tagline|default:"Домашний сайт" }}</p>
+            {% if site_settings.welcome_text %}
+                <p class="hero-text">{{ site_settings.welcome_text }}</p>
+            {% else %}
+                <p class="hero-text">Это личный сайт, который мы создали вместе с вами. Здесь можно зарегистрироваться, загрузить свои файлы и управлять настройками.</p>
+            {% endif %}
+            <div class="hero-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'files:list' %}" class="btn btn-primary">Перейти в файлы</a>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Мой профиль</a>
+                {% elif site_settings.allow_registration %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary">Создать аккаунт</a>
+                {% endif %}
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Что можно делать на сайте</h2>
+            <div class="cards-grid">
+                <div class="card feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Аккаунты</h3>
+                    <p>Регистрация, авторизация и личные профили. Только залогиненные пользователи видят свои данные.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>Файловое хранилище</h3>
+                    <p>Загрузка, скачивание и удаление файлов в личном хранилище каждого пользователя.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>Админка</h3>
+                    <p>Создатель сайта может управлять пользователями и настраивать содержимое сайта.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

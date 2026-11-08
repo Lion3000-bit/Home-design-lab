@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site_settings.site_name|default:"Мой дом" }}{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% if site_settings and site_settings.maintenance_mode and not user.is_staff %}
+        <div class="maintenance-banner">
+            <div class="container">
+                <strong>Сайт находится на техническом обслуживании</strong>
+                <span>Приносим извинения за неудобства. Администрация уже работает над исправлением.</span>
+            </div>
+        </div>
+    {% endif %}
+
+    <header class="site-header">
+        <div class="container nav-wrap">
+            <a href="{% url 'pages:home' %}" class="brand">{{ site_settings.site_name|default:"Мой дом" }}</a>
+            <nav class="nav">
+                <a href="{% url 'pages:home' %}" class="nav-link">Главная</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'files:list' %}" class="nav-link">Файлы</a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a href="{% url 'dashboard:home' %}" class="nav-link nav-link-accent">Админка</a>
+                {% endif %}
+            </nav>
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" class="user-chip">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="avatar avatar-sm">
+                        {% else %}
+                            <span class="avatar avatar-initials">{{ user.initials }}</span>
+                        {% endif %}
+                        <span class="user-chip-name">{{ user.full_name|default:user.username }}</span>
+                    </a>
+                    <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="btn btn-ghost btn-sm">Войти</a>
+                    {% if site_settings.allow_registration %}
+                        <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Регистрация</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-brand">{{ site_settings.site_name|default:"Мой дом" }}</div>
+            <div class="footer-tagline">{{ site_settings.tagline|default:"" }}</div>
+            <div class="footer-copy">© {% now "Y" %} · Сделано с любовью</div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

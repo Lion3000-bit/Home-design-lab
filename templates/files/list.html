@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Мои файлы · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Мои файлы</h1>
+        <p class="page-subtitle">Загрузка, скачивание и удаление файлов</p>
+    </div>
+
+    <div class="card storage-card">
+        <div class="storage-info">
+            <span>Использовано: <strong>{{ storage_used }} Байт</strong></span>
+            <span class="muted">Лимит хранилища: {{ storage_limit }} Байт</span>
+        </div>
+        <div class="storage-bar">
+            <div class="storage-bar-fill" style="width: {{ storage_percent }}%"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Загрузить файлы</h2>
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            <input type="file" name="files" id="files" multiple required>
+            <button type="submit" class="btn btn-primary">Загрузить</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Загруженные файлы ({{ files|length }})</h2>
+        {% if files %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Размер</th>
+                        <th>Тип</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in files %}
+                        <tr>
+                            <td class="file-name">{{ f.name }}</td>
+                            <td>{{ f.size_human }}</td>
+                            <td>{{ f.content_type }}</td>
+                            <td>{{ f.uploaded_at|date:"d.m.Y H:i" }}</td>
+                            <td class="file-actions">
+                                <a href="{% url 'files:download' f.id %}" class="btn btn-small btn-outline">Скачать</a>
+                                <form method="post" action="{% url 'files:delete' f.id %}" class="delete-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="muted">Файлы ещё не были загружены.</p>
+        {% endif %}
+    </div>
+{% endblock %}

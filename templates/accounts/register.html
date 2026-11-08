@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="auth-card card">
+        <h1 class="auth-title">Создание аккаунта</h1>
+        <p class="auth-subtitle">Присоединяйтесь к сайту</p>
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-field">
+                <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.password1.id_for_label }}">Пароль</label>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.password2.id_for_label }}">Подтверждение пароля</label>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+        </form>
+        <div class="auth-links">
+            <a href="{% url 'accounts:login' %}">Уже есть аккаунт? Войдите</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Мой профиль</h1>
+        <p class="page-subtitle">Личные данные и настройки аккаунта</p>
+    </div>
+
+    <div class="profile-layout">
+        <div class="card profile-card">
+            <div class="profile-avatar">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="avatar avatar-lg">
+                {% else %}
+                    <span class="avatar avatar-initials avatar-lg">{{ user.initials }}</span>
+                {% endif %}
+            </div>
+            <h2 class="profile-name">{{ user.full_name|default:user.username }}</h2>
+            <div class="profile-email">{{ user.email }}</div>
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-value">{{ user.stored_files.count }}</div>
+                    <div class="stat-label">файлов</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Редактировать данные</h2>
+            <form method="post" enctype="multipart/form-data" class="form">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {% for field in form %}
+                    <div class="form-field">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}<div class="help-text">{{ field.help_text }}</div>{% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+        <h2 class="card-title">Сменить пароль</h2>
+        <form method="post" action="{% url 'accounts:password_change' %}" class="form form-narrow">
+            {% csrf_token %}
+            {{ change_password_form.non_field_errors }}
+            <div class="form-field">
+                {{ change_password_form.old_password.label_tag }}
+                {{ change_password_form.old_password }}
+                {{ change_password_form.old_password.errors }}
+            </div>
+            <div class="form-field">
+                {{ change_password_form.new_password1.label_tag }}
+                {{ change_password_form.new_password1 }}
+                {{ change_password_form.new_password1.errors }}
+            </div>
+            <div class="form-field">
+                {{ change_password_form.new_password2.label_tag }}
+                {{ change_password_form.new_password2 }}
+                {{ change_password_form.new_password2.errors }}
+            </div>
+            <button type="submit" class="btn btn-outline">Обменять пароль</button>
+        </form>
+    </div>
+{% endblock %}

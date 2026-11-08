@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки сайта · Панель администратора · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Настройки сайта</h1>
+        <p class="page-subtitle">Контент и параметры, которые видят посетители</p>
+    </div>
+
+    <div class="card">
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-field">
+                {{ form.site_name.label_tag }}
+                {{ form.site_name }}
+                {{ form.site_name.errors }}
+            </div>
+            <div class="form-field">
+                {{ form.tagline.label_tag }}
+                {{ form.tagline }}
+                {{ form.tagline.errors }}
+            </div>
+            <div class="form-field">
+                {{ form.welcome_text.label_tag }}
+                {{ form.welcome_text }}
+                {{ form.welcome_text.errors }}
+            </div>
+            <div class="form-field">
+                {{ form.announcement.label_tag }}
+                {{ form.announcement }}
+                {{ form.announcement.errors }}
+            </div>
+            <div class="form-field checkbox-field">
+                {{ form.announcement_active }}
+                {{ form.announcement_active.label_tag }}
+            </div>
+            <div class="form-field checkbox-field">
+                {{ form.allow_registration.label_tag }}
+                {{ form.allow_registration }}
+            </div>
+            <div class="form-field checkbox-field">
+                {{ form.maintenance_mode.label_tag }}
+                {{ form.maintenance_mode }}
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Панель администратора</h1>
+        <p class="page-subtitle">Обзор и управление сайтом</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="card stat-card">
+            <div class="stat-value">{{ total_users }}</div>
+            <div class="stat-label">Пользователей</div>
+        </div>
+        <div class="card stat-card">
+            <div class="stat-value">{{ active_users }}</div>
+            <div class="stat-label">Активных</div>
+        </div>
+        <div class="card stat-card">
+            <div class="stat-value">{{ staff_users }}</div>
+            <div class="stat-label">Администраторов</div>
+        </div>
+        <div class="card stat-card">
+            <div class="stat-value">{{ total_files }}</div>
+            <div class="stat-label">Загруженных файлов</div>
+        </div>
+        <div class="card stat-card">
+            <div class="stat-value">{{ storage_used }}</div>
+            <div class="stat-label">Объём файлов (Байт)</div>
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="{% url 'dashboard:settings' %}" class="btn btn-primary">Настройки сайта</a>
+        <a href="{% url 'dashboard:users' %}" class="btn btn-outline">Управление пользователями</a>
+        <a href="{% url 'admin:index' %}" class="btn btn-ghost">Django Admin</a>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <h2 class="card-title">Последние пользователи</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in recent_users %}
+                        <tr>
+                            <td>{{ u.email }}</td>
+                            <td>
+                                {% if u.is_active %}<span class="badge badge-success">Активен</span>{% else %}<span class="badge badge-danger">Заблокирован</span>{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card">
+            <h2 class="card-title">Последние файлы</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Файл</th>
+                        <th>Пользователь</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in recent_files %}
+                        <tr>
+                            <td>{{ f.name }}</td>
+                            <td>{{ f.user.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

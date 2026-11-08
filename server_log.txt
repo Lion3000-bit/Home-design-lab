@@ -1,0 +1,213 @@
+Watching for file changes with StatReloader
+[08/Nov/2026 13:00:14] "GET /accounts/login/ HTTP/1.1" 200 2303
+[08/Nov/2026 13:00:14] "GET /static/css/style.css HTTP/1.1" 304 0
+Not Found: /favicon.ico
+[08/Nov/2026 13:00:14] "GET /favicon.ico HTTP/1.1" 404 3044
+Not Found: /health
+[08/Nov/2026 13:00:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:00:46] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:00:46] "POST /accounts/login/ HTTP/1.1" 200 2538
+Not Found: /health
+[08/Nov/2026 13:01:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:01:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:02:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:02:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:03:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:03:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:04:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:04:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:05:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:05:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:06:16] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:06:41] "POST /accounts/login/ HTTP/1.1" 200 2555
+[08/Nov/2026 13:06:41] "GET /static/css/style.css HTTP/1.1" 304 0
+Not Found: /health
+[08/Nov/2026 13:06:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:07:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:07:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:08:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:08:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:09:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:09:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:10:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:10:46] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:11:01] "POST /accounts/register/ HTTP/1.1" 200 3358
+[08/Nov/2026 13:11:01] "GET /static/css/style.css HTTP/1.1" 304 0
+Not Found: /health
+[08/Nov/2026 13:11:16] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:11:18] "POST /accounts/register/ HTTP/1.1" 200 3358
+[08/Nov/2026 13:11:24] "GET / HTTP/1.1" 200 3561
+[08/Nov/2026 13:11:25] "GET /accounts/login/ HTTP/1.1" 200 2303
+C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 08, 2026 - 12:59:51
+Django version 6.1.3, using settings 'config.settings'
+Starting WSGI development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/6.1/howto/deployment/
+Watching for file changes with StatReloader
+[08/Nov/2026 13:11:28] "GET / HTTP/1.1" 200 3561
+[08/Nov/2026 13:11:38] "GET /accounts/login/ HTTP/1.1" 200 2303
+Not Found: /health
+[08/Nov/2026 13:11:46] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:11:47] "POST /accounts/login/ HTTP/1.1" 302 0
+Internal Server Error: /accounts/profile/
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 56, in inner
+    response = get_response(request)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\base.py", line 199, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\contrib\auth\mixins.py", line 74, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 61, in get
+    return render(request, self.template_name, self.get_context_data())
+                                               ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 55, in get_context_data
+    context = super().get_context_data(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'get_context_data'
+[08/Nov/2026 13:11:47] "GET /accounts/profile/ HTTP/1.1" 500 85375
+Not Found: /health
+[08/Nov/2026 13:12:16] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:12:34] "GET /accounts/login/ HTTP/1.1" 302 0
+[08/Nov/2026 13:12:37] "GET /accounts/login/ HTTP/1.1" 302 0
+Internal Server Error: /accounts/profile/
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 56, in inner
+    response = get_response(request)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\base.py", line 199, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\contrib\auth\mixins.py", line 74, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 61, in get
+    return render(request, self.template_name, self.get_context_data())
+                                               ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 55, in get_context_data
+    context = super().get_context_data(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'get_context_data'
+[08/Nov/2026 13:12:37] "GET /accounts/profile/ HTTP/1.1" 500 85223
+[08/Nov/2026 13:12:40] "GET /accounts/login/ HTTP/1.1" 302 0
+Internal Server Error: /accounts/profile/
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 56, in inner
+    response = get_response(request)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\base.py", line 199, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\contrib\auth\mixins.py", line 74, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 61, in get
+    return render(request, self.template_name, self.get_context_data())
+                                               ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 55, in get_context_data
+    context = super().get_context_data(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'get_context_data'
+[08/Nov/2026 13:12:40] "GET /accounts/profile/ HTTP/1.1" 500 85223
+[08/Nov/2026 13:12:43] "GET / HTTP/1.1" 200 4027
+Not Found: /health
+[08/Nov/2026 13:12:46] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:12:48] "GET /files/ HTTP/1.1" 200 3093
+[08/Nov/2026 13:12:48] "GET /static/css/style.css HTTP/1.1" 304 0
+Not Found: /health
+[08/Nov/2026 13:13:16] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:13:38] "POST /files/ HTTP/1.1" 302 0
+[08/Nov/2026 13:13:38] "GET /files/ HTTP/1.1" 200 4472
+Not Found: /health
+[08/Nov/2026 13:13:46] "GET /health HTTP/1.1" 404 3029
+[08/Nov/2026 13:13:55] "GET /files/1/download/ HTTP/1.1" 200 958707200
+[08/Nov/2026 13:13:56] "POST /files/1/delete/ HTTP/1.1" 302 0
+[08/Nov/2026 13:13:56] "GET /files/ HTTP/1.1" 200 3093
+[08/Nov/2026 13:13:59] "GET / HTTP/1.1" 200 4027
+[08/Nov/2026 13:14:00] "GET /files/ HTTP/1.1" 200 3093
+Not Found: /health
+[08/Nov/2026 13:14:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:14:46] "GET /health HTTP/1.1" 404 3029
+Internal Server Error: /accounts/profile/
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 56, in inner
+    response = get_response(request)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\base.py", line 199, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\contrib\auth\mixins.py", line 74, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 61, in get
+    return render(request, self.template_name, self.get_context_data())
+                                               ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\Documents\╧ЁюхъЄ яю єьюыўрэш■\accounts\views.py", line 55, in get_context_data
+    context = super().get_context_data(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'get_context_data'
+[08/Nov/2026 13:14:50] "GET /accounts/profile/ HTTP/1.1" 500 85229
+Not Found: /health
+[08/Nov/2026 13:15:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:15:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:16:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:16:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:17:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:17:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:18:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:18:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:19:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:19:46] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:20:16] "GET /health HTTP/1.1" 404 3029
+Not Found: /health
+[08/Nov/2026 13:20:46] "GET /health HTTP/1.1" 404 3029
