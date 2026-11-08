@@ -9,8 +9,8 @@ from django.views.generic import TemplateView  # Проверьте импорт
 
 from pages.models import SiteSettings
 
-from .forms import ChangePasswordForm, ProfileForm, RegisterForm
-from .models import CustomUser
+from .forms import ChangePasswordForm, LinkForm, ProfileForm, RegisterForm
+from .models import CustomUser, UserLink
 
 
 class RegisterView(View):
@@ -76,6 +76,33 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         # Если форма невалидна, передаем ее в контекст, чтобы пользователь увидел ошибки
         context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
+
+
+class LinkListView(LoginRequiredMixin, View):
+    """Страница со ссылками пользователя и формой добавления новой ссылки."""
+
+    template_name = "accounts/links.html"
+
+    def get(self, request, *args, **kwargs):
+        links = UserLink.objects.filter(user=request.user).order_by("-created_at")
+        return render(request, self.template_name, {"links": links, "form": LinkForm()})
+
+    def post(self, request, *args, **kwargs):
+        form = LinkForm(request.POST)
+        if form.is_valid():
+            link = form.save(commit=False)
+            link.user = request.user
+            link.save()
+            return redirect("accounts:links")
+        links = UserLink.objects.filter(user=request.user).order_by("-created_at")
+        return render(request, self.template_name, {"links": links, "form": form})
+
+
+class LinkDeleteView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        link = get_object_or_404(UserLink, id=kwargs.get("pk"), user=request.user)
+        link.delete()
+        return redirect("accounts:links")
 
 
 class ChangePasswordView(View):

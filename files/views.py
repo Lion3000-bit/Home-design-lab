@@ -49,6 +49,26 @@ class FileListView(LoginRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
 
+class PublicFilesView(LoginRequiredMixin, ListView):
+    """Просмотр файлов всех пользователей (доступно любому авторизованному)."""
+
+    model = StoredFile
+    template_name = "files/public_list.html"
+    context_object_name = "files"
+
+    def get_queryset(self):
+        return (
+            StoredFile.objects.select_related("user")
+            .all()
+            .order_by("-uploaded_at")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["site_settings"] = SiteSettings.load()
+        return context
+
+
 class FileDeleteView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         obj = get_object_or_404(StoredFile, id=kwargs.get("pk"), user=request.user)

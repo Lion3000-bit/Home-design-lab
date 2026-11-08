@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Общий чат · {{ site_settings.site_name|default:"Мой дом" }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1 class="page-title">Общий чат</h1>
+        <p class="page-subtitle">Чат между всеми пользователями сайта</p>
+    </div>
+
+    <div class="two-col">
+        <div class="card chat-card" style="flex: 1;">
+            <h2 class="card-title">Сообщения</h2>
+            <div class="chat-messages" id="chat-messages">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="chat-message{% if message.user == user %} chat-message-own{% endif %}">
+                            <div class="chat-message-header">
+                                <span class="chat-message-author">
+                                    {% if message.user.avatar %}
+                                        <img src="{{ message.user.avatar.url }}" alt="{{ message.user.username }}" class="avatar avatar-sm">
+                                    {% else %}
+                                        <span class="avatar avatar-initials avatar-sm">{{ message.user.initials }}</span>
+                                    {% endif %}
+                                    {{ message.user.full_name|default:message.user.username }}
+                                </span>
+                                <span class="chat-message-time">{{ message.created_at|date:"d.m.Y H:i" }}</span>
+                            </div>
+                            <div class="chat-message-text">{{ message.text|linebreaksbr }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="chat-empty">Сообщений пока нет. Напишите первое!</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+            <h2 class="card-title">Написать сообщение</h2>
+            <form method="post" class="form chat-form" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-field">
+                    <textarea name="text" rows="4" placeholder="Ваше сообщение..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Отправить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var chatMessages = document.getElementById("chat-messages");
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+{% endblock %}
